@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simulateur de bac</title>
+</head>
+</html>
+<body>
+	<style type="text/css">
+
+		body{
+			font-family: "Arial","Helvetica",sans-serif;
+			font-size: 20px;
+			background-color: #ebebbc;
+		}
+		.barre{
+			float: left;
+		}
+		.titre_epreuve{
+			text-decoration: underline;
+			word-spacing: 3px;	
+		}
+		.note{
+			display: block;
+		}
+		.note:hover{
+			border: solid grey 2px;
+		}
+
+		#tpe{
+			display: block;
+		}
+		#tpe:hover{
+			border: solid grey 2px;
+		}
+	
+		label{
+			line-height: 40px;
+		}
+		#svt{
+			visibility: hidden;
+
+		}
+		
+		#bouton{
+			position: relative;
+			width: 200px;
+			border-radius: 3px;
+			border: 1px solid black;
+			text-transform: uppercase;
+			transition: 0.3s;			
+			font-weight: bold;
+
+		}
+
+		#bouton:hover{
+			box-shadow: 1px 0.5px 0px 0.2px;
+
+		}
+
+		#div_info{
+			height: 70px
+		}
+
+	</style>
+	<label>Filière</label>
+	<select id="filière" onchange="filière(),check_default();">
+		<option value="Choisissez">--Choisissez--</option>
+		<option>SI</option>
+		<option>SVT</option>
+	</select>
+
+	<label>Spécialité:</label>
+	<select id="option" required onchange="specialite()">
+		<option value="Choisissez">--Choisissez--</option>
+		<option value="Physiques-Chimie">Physiques-Chimie</option>
+		<option value="Mathématiques">Mathématiques</option>
+		<option value="isn">Informatique et sciences du numérique</option>
+		<option id="svt" value="SVT">Sciences et vie de la terre</option>
+	</select>
+	<br>
+
+<hr width="500px" class="barre">
+
+	<h3 class="titre_epreuve">Epreuves anticipées:</h3>
+
+	<label>Français (<i>oral</i>):</label>
+	<span class="coeff">2</span>
+	<input type="number" min="0" max="20" class="note">
+	<label>Français (<i>écrit</i>):</label>
+	<span class="coeff">2</span>
+	<input type="number" min="0" max="20" class="note">
+	<label>TPE:</label>
+	<span>2</span>
+	<input type="number" min="0" max="20" id="tpe">
+	<hr width="500px" class="barre">
+
+	<h3 class="titre_epreuve">Epreuves Terminale:</h3>
+
+	<label>Mathématiques:</label>
+	<span class="coeff" id="maths">7</span>
+	<input type="number" min="0" max="20" class="note" >
+	<label>Physique-chimie:</label>
+	<span class="coeff" id="physique-chimie">6</span>
+	<input type="number" min="0" max="20" class="note">
+	<label>Histoire-géographie:</label>
+	<span class="coeff">3</span>
+	<input type="number" min="0" max="20" class="note">
+	<label id="si">Sciences de l'ingénieur:</label>
+	<span class="coeff" id="SIcoeff">6</span>
+	<input type="number" min="0" max="20" class="note">
+	<label>Philosophie:</label>
+	<span class="coeff">3</span>
+	<input type="number" min="0" max="20" class="note">
+	<label>EPS:</label>
+	<span class="coeff">2</span>
+	<input type="number" min="0" max="20" class="note">
+	<label>LV1:</label>
+	<span class="coeff">3</span>
+	<input type="number" min="0" max="20" class="note">
+	<label>LV2:</label>
+	<span class="coeff">2</span>
+	<input type="number" min="0" max="20" class="note">	
+ 	<a id="bouton_lien" href="#resultats" ><input type="button" onclick="result()" value="résultats" id="bouton"></a>
+ 	<p id="resultats"></p>
+
+	<script type="text/javascript">
+		let option = document.getElementById("option")
+		let filiere = document.getElementById("filière")
+		let info = document.createElement("div")
+		option.disabled = true;
+
+		const specialite = ()=>{
+		
+			if(option.value === "Physiques-Chimie"){
+				document.getElementById("physique-chimie").innerHTML = "8";
+				document.getElementById("maths").innerHTML = "7";
+				info.remove();
+
+			}else if(option.value === "Mathématiques"){
+					document.getElementById("maths").innerHTML = "9";
+					document.getElementById("physique-chimie").innerHTML = "6";
+					info.remove();
+		
+			}else if(option.value === "isn"){
+					informatique();
+					document.getElementById("maths").innerHTML = "7";
+
+
+			}else if(option.value === "SVT"){
+				document.getElementById("SIcoeff").innerHTML = "8";
+				document.getElementById("maths").innerHTML = "7";
+				document.getElementById("physique-chimie").innerHTML = "6";
+				info.remove();
+			}
+			if(filiere.value === "SVT" && option.value != "SVT"){
+				document.getElementById("SIcoeff").innerHTML = "6"
+			}
+
+		}
+
+		const filière = ()=>{
+				
+			if(filiere.value === "SVT"){
+				document.getElementById("si").innerHTML = "Sciences et vie de la terre:"
+				document.getElementById("svt").style.visibility = "visible";
+
+			}else if(filiere.value === "SI"){
+				document.getElementById("si").innerHTML = "Sciences de l'ingénieur:"
+				document.getElementById("svt").style.visibility = "hidden"
+			}
+				
+		}
+
+		const check_default = ()=>{
+
+			filiere.value !== "Choisissez" ? option.disabled = false : option.disabled = true;
+
+		}
+
+		const informatique = ()=>{
+
+			let bouton = document.getElementById("bouton_lien")
+			info.id = "div_info"
+			info.innerHTML = "<label>Informatique et sciences du numérique:<span class=\"coeff\">2</span><br><input type=\"number\" min=\"0\" max=\"20\" class=\"note\"><br>"
+			bouton.parentNode.insertBefore(info,bouton)
+		}				
+
+		const result = ()=>{
+
+			let notes = document.getElementsByClassName("note");
+			let coeff = document.getElementsByClassName("coeff");
+			let resultats = document.getElementById("resultats");
+			let tpe = document.getElementById("tpe");
+		    let total = 0;
+			let tab_coeff = [];
+			let tab_notes = [];
+			let moyenne = 0;
+			let somme = 0;
+			resultats.style = "color: black;"
+			 
+			for(let i = 0;i<notes.length;i++){	
+					
+				tab_coeff.push(parseInt(coeff[i].innerHTML));	
+				tab_notes.push(parseInt(notes[i].value));
+				total+=tab_coeff[i]*tab_notes[i];
+
+			}
+
+			if(tpe.value>10){
+				total+=(tpe.value-10)*2
+			}
+				
+			for(let i in tab_coeff){
+				somme+=tab_coeff[i]
+
+			}
+
+			moyenne = total / somme;
+
+
+			if(moyenne < 8){
+				var phrase = "Vous n'obtenez pas votre bac et vous ne pouvez pas aller au rattrapage."
+			}
+			else if(moyenne >=8 && moyenne <10){
+				var phrase = "Vous n'avez pas votre bac mais vous pouvez aller au rattrapage."
+			}
+			else if(moyenne>=10 && moyenne<12){
+				var phrase = "Vous êtes admis."
+			}
+			else if(moyenne>=12 && moyenne<14){
+				var phrase = "Vous avez votre bac avec <strong>mention Assez bien.</strong>"
+			}
+			else if(moyenne>=14 && moyenne<16){
+				var phrase = "Vous avez votre bac avec <strong>mention Bien.</strong>"
+			}
+			else if(moyenne>=16 && moyenne<18){
+				var phrase = "Vous avez votre bac avec <strong>mention Très bien!</strong>"
+			}
+			else if(moyenne>=18 || moyenne===20){
+				var phrase = "Vous êtes admis et vous avez votre bac avec les <strong>félicitations du jury</strong>."
+			}
+			else{
+				var phrase = "Vous devez remplir toutes les cases."
+				resultats.style = "color:red;"
+
+			}
+
+
+			resultats.innerHTML = "Moyenne: " +"<strong>"+moyenne.toFixed(2)+"</strong>"+"<br>"+ phrase;
+
+			console.log(moyenne)
+			console.log(tab_notes)
+			console.log(total)
+
+		}	
+		</script>
+</body>
+</html>
